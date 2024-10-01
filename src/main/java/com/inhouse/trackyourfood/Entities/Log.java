@@ -2,10 +2,7 @@ package com.inhouse.trackyourfood.Entities;
 
 import java.sql.Timestamp;
 
-import com.inhouse.trackyourfood.Types.LogKey;
-
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

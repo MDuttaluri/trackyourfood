@@ -13,4 +13,6 @@ public interface LogRepository extends JpaRepository<Log, Long> {
     Log findByIdAndUserId(long id, long userId);
 
     List<Log> findByTimestampBetween(Timestamp start, Timestamp end);
+
+    List<Log> findByUserIdAndTimestampBetween(long userId, Timestamp start, Timestamp end);
 }

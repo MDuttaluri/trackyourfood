@@ -13,6 +13,8 @@ import jakarta.validation.Valid;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +47,8 @@ public class LogController {
 
     @GetMapping("/fromGiven")
     public List<Log> getLogFromGiven(@RequestBody LogRequest request) {
-        LocalDate startDate = LocalDate.parse(request.getTimestamp().toString());
+
+        LocalDate startDate = LocalDate.ofInstant(request.getTimestamp().toInstant(), ZoneId.systemDefault());
         LocalDate endDate = null;
 
         switch (request.getInterval()) {
@@ -67,8 +70,16 @@ public class LogController {
             default:
                 return null;
         }
-        return logRepository.findByTimestampBetween(Timestamp.valueOf(startDate.toString()),
-                Timestamp.valueOf(endDate.toString()));
+        // System.out.println("=============\n\n");
+        // System.out.println(startDate);
+        // System.out.println(endDate);
+        // System.out.println("=============\n\n" +
+        // Timestamp.valueOf(endDate.atStartOfDay()));
+
+        return logRepository.findByUserIdAndTimestampBetween(
+                request.getUserId(),
+                request.getTimestamp(),
+                Timestamp.valueOf(endDate.atStartOfDay()));
     }
 
     @GetMapping("/interval")
