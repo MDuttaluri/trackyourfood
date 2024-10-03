@@ -8,6 +8,8 @@ import com.inhouse.trackyourfood.Entities.WeightGoal;
 import com.inhouse.trackyourfood.Repositories.UserRepository;
 import com.inhouse.trackyourfood.Repositories.WeightGoalRepository;
 import com.inhouse.trackyourfood.Services.UserService;
+import com.inhouse.trackyourfood.Services.WeightGoalService;
+import com.inhouse.trackyourfood.Types.GoalRequest;
 
 import jakarta.validation.Valid;
 
@@ -55,7 +57,13 @@ public class UserController {
     }
 
     @PostMapping("/addWeightGoal")
-    public long addNewWeightGoal(@Valid @RequestBody WeightGoal weightGoal) {
+    public long addNewWeightGoal(@Valid @RequestBody WeightGoal weightGoal) throws Exception {
+        User user = userRepository.findById(weightGoal.getUserId()).get();
+        if (user == null) {
+            throw new Exception("No user found.");
+        }
+        weightGoal.setStartWeight(user.getWeight());
+        weightGoal = WeightGoalService.updateCaloriesPerDay(weightGoal);
         return weightGoalRepository.save(weightGoal).getId();
     }
 
@@ -67,6 +75,41 @@ public class UserController {
     @GetMapping("/activeGoals")
     public List<WeightGoal> getMethodName() {
         return weightGoalRepository.findAll();
+    }
+
+    @GetMapping("/weightGoals")
+    public List<WeightGoal> getWeightGoals(@Valid @RequestBody GoalRequest request) throws Exception {
+
+        User user = userRepository.findById(request.getUserId()).get();
+
+        if (user == null)
+            throw new Exception("User not found.");
+
+        List<WeightGoal> resultList = weightGoalRepository.findByUserId(user.getId());
+        return resultList.stream()
+                .filter(goal -> request.isQueryActive() ? (goal.isActive() == request.isActive()) : true)
+                .filter(goal -> request.isQueryLabel() ? (goal.getLabel() == request.getLabel()) : true)
+                .toList();
+
+    }
+
+    @GetMapping("/weightGoal/{goalId}")
+    public WeightGoal getWeightGoal(@PathVariable long goalId) {
+        return weightGoalRepository.findById(goalId).get();
+    }
+
+    @PostMapping("/weightGoal/update")
+    public long updateWeightGoal(@Valid @RequestBody WeightGoal request) throws Exception {
+
+        WeightGoal goal = weightGoalRepository.findById(request.getId()).get();
+        if (goal == null) {
+            throw new Exception("No goal found.");
+        }
+
+        goal = WeightGoalService.copyWeightGoal(request, goal);
+        WeightGoalService.updateCaloriesPerDay(goal);
+        weightGoalRepository.save(goal);
+        return goal.getId();
     }
 
 }

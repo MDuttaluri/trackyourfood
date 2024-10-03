@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import com.inhouse.trackyourfood.Entities.User;
 import com.inhouse.trackyourfood.Entities.WeightGoal;
 import com.inhouse.trackyourfood.Types.BMILabel;
+import com.inhouse.trackyourfood.Types.PlanLabel;
+import com.inhouse.trackyourfood.Types.WeightPlan;
 
 @Service
 public class UserService {
@@ -13,7 +15,6 @@ public class UserService {
         float height = (float) user.getHeight() / 100; // cm to m
         float bmi = (float) (user.getWeight() / (height * height));
         user.setBMI(bmi);
-        System.out.println("\n\n==================" + user + "=============" + height);
         if (bmi < 18.4) {
             user.setBmiLabel(BMILabel.UNDERWEIGHT);
         } else if (bmi < 25) {
@@ -55,6 +56,15 @@ public class UserService {
         }
 
         return UserService.updateBMR(UserService.updateBMI(target));
+    }
+
+    public static void getWeightGoalPlans(User user, WeightGoal goal) {
+        float reqChange = goal.getTargetWeight() - user.getWeight();
+
+        WeightPlan aggressivWeightPlan = new WeightPlan();
+        WeightPlan balancedWeightPlan = new WeightPlan();
+        WeightPlan passiveWeightPlan = new WeightPlan();
+
     }
 
 }
