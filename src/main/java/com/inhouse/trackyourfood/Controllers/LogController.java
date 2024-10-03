@@ -14,7 +14,6 @@ import jakarta.validation.Valid;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,11 +69,6 @@ public class LogController {
             default:
                 return null;
         }
-        // System.out.println("=============\n\n");
-        // System.out.println(startDate);
-        // System.out.println(endDate);
-        // System.out.println("=============\n\n" +
-        // Timestamp.valueOf(endDate.atStartOfDay()));
 
         return logRepository.findByUserIdAndTimestampBetween(
                 request.getUserId(),
