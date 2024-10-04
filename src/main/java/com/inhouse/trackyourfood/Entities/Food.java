@@ -1,49 +1,46 @@
 package com.inhouse.trackyourfood.Entities;
 
-import java.sql.Timestamp;
+import java.util.List;
 
-import com.inhouse.trackyourfood.Types.LogCategory;
+import com.inhouse.trackyourfood.Types.FoodCategory;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Entity
 @Data
-public class Log {
+public class Food {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    long autoId;
-
-    @Column
+    @GeneratedValue
     long id;
 
     @Column
-    long userId;
+    @NotBlank
+    String name;
 
     @Column
     @Enumerated(EnumType.STRING)
-    LogCategory logCategory;
+    List<FoodCategory> foodCategory;
 
     @Column
-    @NotNull
-    Timestamp timestamp;
+    @Positive
+    float calories;
 
     @Column
-    long calories;
-
-    // item ids
-    @Column
-    long items[];
+    String servingSize;
 
     @Column
-    double quantities[];
+    List<String> ingredients;
+
+    @Column
+    List<String> macros;
 
 }
